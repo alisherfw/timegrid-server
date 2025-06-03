@@ -1,81 +1,63 @@
-const Event = require("../model/Event")
+const Event = require("../model/Event");
 
 const getAllEvents = async (req, res) => {
-    
     try {
-
         const userId = req.user._id;
         const events = await Event.find({ user: userId });
-
-        res.status(200).json(events)
-
+        res.status(200).json(events);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
-
-}
+};
 
 const createEvent = async (req, res) => {
-
     try {
-        
-        const newEvent = new Event({...req.body, user: req.user._id})
+        const newEvent = new Event({ ...req.body, user: req.user._id });
         const saved = await newEvent.save();
-
-        res.status(201).json({saved})
-
+        res.status(201).json(saved);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
-
-}
+};
 
 const updateEvent = async (req, res) => {
-
     try {
-
         const updatedEvent = await Event.findOneAndUpdate(
-            { _id: req.params._id, user: req.user._id },
+            { _id: req.params.id, user: req.user._id },
             req.body,
-            {new: true}
+            { new: true }
         );
 
-        if(!updatedEvent) {
+        if (!updatedEvent) {
             return res.status(404).json({ error: "Event not found!" });
         }
 
         res.status(200).json(updatedEvent);
-        
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
+};
 
-}
-
-const deleteEvent = async(req, res) => {
-
+const deleteEvent = async (req, res) => {
     try {
-        
-        const deletedEvent = Event.findByIdAndDelete({
-            _id: req.params._id,
-            user: req.user._id
+        const deletedEvent = await Event.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user._id,
         });
 
-        if(!deleted) {
-            return res.status(404).json({error: "Event not found"});
+        if (!deletedEvent) {
+            return res.status(404).json({ error: "Event not found" });
         }
 
-        res.status(200).json({message: "Event deleted"});
-
+        res.status(200).json({ message: "Event deleted" });
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
-
-}
+};
 
 module.exports = {
     getAllEvents,
     createEvent,
     updateEvent,
-    deleteEvent
+    deleteEvent,
 };

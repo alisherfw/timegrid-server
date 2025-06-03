@@ -13,7 +13,7 @@ const {
 
 router.get('/', authenticate, getAllEvents);
 router.post('/', authenticate, createEvent);
-router.put('/', authenticate, checkOwnership, updateEvent);
-router.delete('/', authenticate, checkOwnership, deleteEvent);
+router.put('/:id', authenticate, checkOwnership, updateEvent);
+router.delete('/:id', authenticate, checkOwnership, deleteEvent);
 
 module.exports = router;
