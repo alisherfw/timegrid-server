@@ -1,4 +1,31 @@
 const Event = require("../model/Event");
+const { Step } = require("../model/Goal")
+
+const checkAndUpdateStepCompletion = async (event) => {
+    if (!event.step) {
+        return;
+    }
+
+    const relatedEvents = await Event.find({
+        step: event.step,
+        status: 'done'
+    })
+
+    const totalDoneHours = relatedEvents.reduce((sum, ev) => {
+        const duration = (new Date(ev.end) - new Date(ev.start)) / (1000 * 60 * 60);
+        return sum + duration;
+    }, 0);
+
+    const step = await Step.findById(event.step);
+    if (!step) {
+        return;
+    }
+    if (totalDoneHours >= step.estimatedHours && !step.completed) {
+        step.completed = true;
+        await step.save();
+    }
+
+}
 
 const getAllEvents = async (req, res) => {
     try {
@@ -27,6 +54,10 @@ const updateEvent = async (req, res) => {
             req.body,
             { new: true }
         );
+
+        if(updatedEvent.steps) {
+            checkAndUpdateStepCompletion(updatedEvent);
+        }
 
         if (!updatedEvent) {
             return res.status(404).json({ error: "Event not found!" });

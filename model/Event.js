@@ -28,6 +28,11 @@ const EventSchema = new mongoose.Schema({
         type: String,
         enum: ["low", "medium", "high"],
         default: "medium"
+    },
+    step: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Step",
+        default: null 
     }
 }, { timestamps: true })
 
