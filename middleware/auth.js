@@ -9,15 +9,13 @@ const authenticate = async (req, res, next) => {
     }
 
     try {
-        
         const verified = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
-
+        
         req.user = verified;
-
         next();
 
     } catch (error) {
-        res.status(400).json({ message: "Invalid token" })
+        res.status(400).json({ message: "Invalid token" });
     }
 }
 
