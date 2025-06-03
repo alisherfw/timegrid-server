@@ -2,20 +2,20 @@ const mongoose = require('mongoose');
 
 const EventSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    start: { type: Date},
-    end: {type: Date},
+    start: { type: Date },
+    end: { type: Date },
     allDay: { type: Boolean, default: false },
     isComplete: { type: Boolean, default: false },
     isRecurring: { type: Boolean, default: false },
-    recurrencePattern: { 
-        type: String, 
+    recurrencePattern: {
+        type: String,
         enum: ["daily", "weekly", "monthly", "yearly"],
     },
     category: { type: String },
     description: { type: String },
     backgroundColor: { type: String },
-    user: { 
-        type: mongoose.Schema.Types.ObjectId, 
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
@@ -29,7 +29,7 @@ const EventSchema = new mongoose.Schema({
         enum: ["low", "medium", "high"],
         default: "medium"
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 const Event = mongoose.model("Event", EventSchema);
 

@@ -5,7 +5,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
 
-const userRoutes = require('./controller/User')
+const userRoutes = require('./routes/User');
+const eventRoutes = require('./routes/Event');
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(helmet())
 app.use(morgan('dev'))
 
 app.use("/api/user", userRoutes);
+app.use("/api/event", eventRoutes);
+
 
 const PORT = process.env.PORT || 3001
 
