@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const TaskSchema = new mongoose.Schema({
+const EventSchema = new mongoose.Schema({
     title: { type: String, required: true },
     start: { type: Date},
     end: {type: Date},
@@ -31,6 +31,6 @@ const TaskSchema = new mongoose.Schema({
     }
 }, {timestamps: true})
 
-const Task = mongoose.model("Task", TaskSchema);
+const Event = mongoose.model("Event", EventSchema);
 
-module.exports = Task;
+module.exports = Event;
