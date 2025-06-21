@@ -1,4 +1,3 @@
-# timegrid-server
 # TimeGrid Server
 
 A simple backend API built with **Node.js**, **Express**, and **Mongoose**.
