@@ -1,5 +1,5 @@
 const Event = require("../model/Event");
-const { Step } = require("../model/Goal")
+const Step = require("../model/Step")
 
 const checkAndUpdateStepCompletion = async (event) => {
     if (!event.step) {
