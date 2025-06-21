@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TimeGrid Server Documentation</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 2em; line-height: 1.6; background-color: #f9f9f9; color: #333; }
+    h1, h2, h3 { color: #2c3e50; }
+    h1 { border-bottom: 2px solid #2c3e50; padding-bottom: 0.3em; }
+    code { background: #eaeaea; padding: 0 4px; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f0f0f0; }
+    .endpoint { font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>TimeGrid Server Backend Documentation</h1>
+<p>This document provides an overview of the backend API implemented in this repository. The server is built with <strong>Node.js</strong>, <strong>Express</strong> and <strong>Mongoose</strong>. Authentication uses JSON Web Tokens (JWT).</p>
+<h2>Setup</h2>
+<p>Environment variables required:</p>
+<ul>
+    <li><code>MONGODB_URI</code> – MongoDB connection string.</li>
+    <li><code>JWT_SECRET</code> – secret key for signing tokens.</li>
+    <li><code>PORT</code> (optional) – listening port, default <code>3001</code>.</li>
+</ul>
+<h2>Models</h2>
+<h3>User</h3>
+<ul>
+    <li><code>name</code> – String, required.</li>
+    <li><code>email</code> – String, required.</li>
+    <li><code>password</code> – String (hashed), required.</li>
+</ul>
+<h3>Goal</h3>
+<ul>
+    <li><code>title</code> – String, required.</li>
+    <li><code>description</code> – String, required.</li>
+    <li><code>user</code> – reference to <code>User</code>.</li>
+</ul>
+<h3>Step</h3>
+<ul>
+    <li><code>goal</code> – reference to <code>Goal</code>, required.</li>
+    <li><code>title</code> – String, required.</li>
+    <li><code>description</code> – String.</li>
+    <li><code>estimatedHours</code> – Number.</li>
+    <li><code>completed</code> – Boolean, default <code>false</code>.</li>
+    <li><code>order</code> – Number, default <code>0</code>.</li>
+</ul>
+<h3>Event</h3>
+<ul>
+    <li><code>title</code> – String, required.</li>
+    <li><code>start</code>, <code>end</code> – Date values.</li>
+    <li><code>allDay</code> – Boolean.</li>
+    <li><code>isComplete</code>, <code>isRecurring</code> – Boolean flags.</li>
+    <li><code>recurrencePattern</code> – "daily", "weekly", "monthly" or "yearly".</li>
+    <li><code>category</code>, <code>description</code>, <code>backgroundColor</code> – optional strings.</li>
+    <li><code>status</code> – "pending", "done" or "missed" (default "pending").</li>
+    <li><code>priority</code> – "low", "medium" or "high" (default "medium").</li>
+    <li><code>user</code> – reference to <code>User</code>, required.</li>
+    <li><code>step</code> – reference to <code>Step</code>, optional.</li>
+</ul>
+<h2>Authentication</h2>
+<p>Clients obtain a JWT via the <code>/api/user/login</code> endpoint. Protected routes require an <code>Authorization: Bearer &lt;token&gt;</code> header. The middleware <code>authenticate</code> validates tokens and attaches the user info to <code>req.user</code>.</p>
+<h2>Routes</h2>
+<table>
+<tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td>POST</td><td class="endpoint">/api/user/register</td><td>User registration.</td></tr>
+<tr><td>POST</td><td class="endpoint">/api/user/login</td><td>User login; returns JWT.</td></tr>
+<tr><td>GET</td><td class="endpoint">/api/event/</td><td>Retrieve all events for the authenticated user.</td></tr>
+<tr><td>POST</td><td class="endpoint">/api/event/</td><td>Create a new event.</td></tr>
+<tr><td>PUT</td><td class="endpoint">/api/event/:id</td><td>Update an event (must own event).</td></tr>
+<tr><td>DELETE</td><td class="endpoint">/api/event/:id</td><td>Delete an event (must own event).</td></tr>
+<tr><td>POST</td><td class="endpoint">/api/goal/</td><td>Create a goal.</td></tr>
+<tr><td>GET</td><td class="endpoint">/api/goal/</td><td>List goals with their steps.</td></tr>
+<tr><td>PUT</td><td class="endpoint">/api/goal/:id</td><td>Update a goal.</td></tr>
+<tr><td>DELETE</td><td class="endpoint">/api/goal/:id</td><td>Delete a goal and its steps.</td></tr>
+<tr><td>POST</td><td class="endpoint">/api/step/</td><td>Create a step for a goal.</td></tr>
+<tr><td>PUT</td><td class="endpoint">/api/step/:id</td><td>Update a step.</td></tr>
+<tr><td>DELETE</td><td class="endpoint">/api/step/:id</td><td>Delete a step and related events.</td></tr>
+</table>
+<h2>Controllers &amp; Middleware</h2>
+<p>Each route delegates to a controller located in <code>controller/</code>. Middleware functions in <code>middleware/auth.js</code> handle authentication and event ownership checks.</p>
+<h2>Server Entry Point</h2>
+<p>The server is started in <code>index.js</code>. It sets up Express middleware, registers route handlers, connects to MongoDB via Mongoose and listens on the specified <code>PORT</code>.</p>
+<p>Logging is performed with <code>morgan</code> and HTTP headers are secured with <code>helmet</code>.</p>
+<h2>License</h2>
+<p>This project is distributed under the terms of the MIT License. See <code>LICENSE</code> for full text.</p>
+</body>
+</html>
