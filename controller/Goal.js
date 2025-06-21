@@ -14,6 +14,25 @@ const createGoal = async (req, res) => {
     }
 }
 
+const updateGoal = async (req, res) => {
+    try {
+        const updatedGoal = await Goal.findOneAndUpdate({
+            _id: req.params.id, user: req.user.id},
+            req.body,
+            { new: true }
+        );
+
+        if(!updatedGoal) {
+            return res.status(404).json({ error: "Goal not found!" })
+        }
+
+        res.status(200).json(updatedGoal)
+        
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
 const getGoalsWithSteps = async (req, res) => {
     
     try {
@@ -47,4 +66,25 @@ const getGoalsWithSteps = async (req, res) => {
 
 }
 
-module.exports = { getGoalsWithSteps, createGoal }
+const deleteGoal = async (req, res) => {
+    try {
+
+        const deletedGoal = await Goal.findByIdAndDelete(req.params.id);
+
+        if(!deletedGoal) {
+            return res.status(404).json({ error: "Goal not found!" });
+        }
+
+        res.status(200).json({ message: "Goal deleted" });
+        
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+module.exports = { 
+    getGoalsWithSteps, 
+    createGoal,
+    updateGoal,
+    deleteGoal
+}

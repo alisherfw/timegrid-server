@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const StepSchema = new mongoose.Schema({
-    goal: { type: mongoose.Schema.Types.ObjectId, ref: "Goal" },
+    goal: { type: mongoose.Schema.Types.ObjectId, ref: "Goal", required: true },
     title: String,
     description: String,
     estimatedHours: Number,

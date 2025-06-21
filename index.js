@@ -7,6 +7,8 @@ const morgan = require('morgan')
 
 const userRoutes = require('./routes/User');
 const eventRoutes = require('./routes/Event');
+const goalRoutes = require('./routes/Goal');
+const stepRoutes = require('./routes/Step');
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use(morgan('dev'))
 
 app.use("/api/user", userRoutes);
 app.use("/api/event", eventRoutes);
+app.use("/api/goal", goalRoutes);
+app.use("/api/step", stepRoutes);
 
 
 const PORT = process.env.PORT || 3001
