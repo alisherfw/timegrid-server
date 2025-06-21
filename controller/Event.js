@@ -80,12 +80,12 @@ const updateEvent = async (req, res) => {
             { new: true }
         );
 
-        if(updatedEvent.step) {
-            await checkAndUpdateStepCompletion(updatedEvent);
-        }
-
         if (!updatedEvent) {
             return res.status(404).json({ error: "Event not found!" });
+        }
+
+        if(updatedEvent.step) {
+            await checkAndUpdateStepCompletion(updatedEvent);
         }
 
         res.status(200).json(updatedEvent);
