@@ -1,5 +1,6 @@
 const Event = require("../model/Event");
 const Step = require("../model/Step")
+const Goal = require("../model/Goal")
 
 const checkAndUpdateStepCompletion = async (event) => {
     if (!event.step) {
@@ -39,6 +40,18 @@ const getAllEvents = async (req, res) => {
 
 const createEvent = async (req, res) => {
     try {
+        if (req.body.step) {
+            const step = await Step.findById(req.body.step);
+            if (!step) {
+                return res.status(403).json({ error: "Unauthorized or step not found" });
+            }
+
+            const goal = await Goal.findById(step.goal);
+            if (!goal || goal.user.toString() !== req.user.id) {
+                return res.status(403).json({ error: "Unauthorized or step not found" });
+            }
+        }
+
         const newEvent = new Event({ ...req.body, user: req.user.id });
         const saved = await newEvent.save();
         res.status(201).json(saved);
@@ -49,6 +62,18 @@ const createEvent = async (req, res) => {
 
 const updateEvent = async (req, res) => {
     try {
+        if (req.body.step) {
+            const step = await Step.findById(req.body.step);
+            if (!step) {
+                return res.status(403).json({ error: "Unauthorized or step not found" });
+            }
+
+            const goal = await Goal.findById(step.goal);
+            if (!goal || goal.user.toString() !== req.user.id) {
+                return res.status(403).json({ error: "Unauthorized or step not found" });
+            }
+        }
+
         const updatedEvent = await Event.findOneAndUpdate(
             { _id: req.params.id, user: req.user.id },
             req.body,
