@@ -69,13 +69,16 @@ const getGoalsWithSteps = async (req, res) => {
 const deleteGoal = async (req, res) => {
     try {
 
-        const deletedGoal = await Goal.findByIdAndDelete(req.params.id);
+        const deletedGoal = await Goal.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user.id,
+        });
 
-        await Step.deleteMany({ goal: req.params.id });
-
-        if(!deletedGoal) {
+        if (!deletedGoal) {
             return res.status(404).json({ error: "Goal not found!" });
         }
+
+        await Step.deleteMany({ goal: req.params.id });
 
         res.status(200).json({ message: "Goal deleted" });
         
