@@ -56,7 +56,7 @@ const updateEvent = async (req, res) => {
         );
 
         if(updatedEvent.steps) {
-            checkAndUpdateStepCompletion(updatedEvent);
+            await checkAndUpdateStepCompletion(updatedEvent);
         }
 
         if (!updatedEvent) {
